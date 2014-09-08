@@ -5,8 +5,27 @@
 // - 2D array of 0/1
 
 //TODO: make these not constants
-var BOARD_WIDTH = 25;
-var BOARD_HEIGHT = 25;
+
+// from stackoverflow.com/questions/8486099/how-do-i-parse-a-url-query-parameters-in-javascript
+var getJsonFromUrl = function() {
+    var query = location.search.substr(1);
+    var result = {};
+    query.split("&").forEach(function(part) {
+        var item = part.split("=");
+        result[item[0]] = decodeURIComponent(item[1]);
+    });
+    return result;
+};
+
+var params = getJsonFromUrl();
+
+var BOARD_WIDTH = params.grid_w ? params.grid_w : 25;
+var BOARD_HEIGHT = params.grid_h ? params.grid_h : 25;
+var WRAP = params.wrap ? params.wrap : true;
+var LIVE_COLOR = params.color_live ? params.color_live : "#222222";
+var DEAD_COLOR = params.color_dead ? params.color_dead : "#FFFFFF";
+var TIMESTEP = params.timestep ? params.timestep : 400;
+var INITIAL_STATE = params.start ? params.start : [];
 
 var board = [];
 var newBoard = [];
@@ -15,23 +34,36 @@ var clone = function(object) {
     return JSON.parse(JSON.stringify(object));
 };
 
-var lifeInit = function() {
+var lifeInit = function(startLive) {
     board = new Array(BOARD_WIDTH);
-    for(var i=0; i<BOARD_WIDTH; i++) {
+    for(var x=0; x<BOARD_WIDTH; x++) {
         var column = new Array(BOARD_HEIGHT);
-        for(var j=0; j<BOARD_HEIGHT; j++) {
-            column[j] = Math.floor(Math.random() * 2);
+        for(var y=0; y<BOARD_HEIGHT; y++) {
+            if(startLive.length == 0) {
+                column[y] = Math.floor(Math.random() * 2);
+            } else if(startLive.indexOf(x + "," + y) > -1) {
+                column[y] = 1;
+            } else {
+                column[y] = 0;
+            }
         }
-        board[i] = column;
+        board[x] = column;
     }
     newBoard = clone(board);
 };
 
 var getNeighbors = function(x, y) {
-    var right = x == BOARD_WIDTH - 1 ? 0 : x + 1;
-    var left = x == 0 ? BOARD_WIDTH - 1 : x - 1;
-    var down = y == BOARD_HEIGHT - 1 ? 0 : y + 1;
-    var up = y == 0 ? BOARD_HEIGHT - 1 : y - 1;
+    if(WRAP) {
+        var right = x == BOARD_WIDTH - 1 ? 0 : x + 1;
+        var left = x == 0 ? BOARD_WIDTH - 1 : x - 1;
+        var down = y == BOARD_HEIGHT - 1 ? 0 : y + 1;
+        var up = y == 0 ? BOARD_HEIGHT - 1 : y - 1;
+    } else {
+        var right = x + 1;
+        var left = x - 1;
+        var down = y + 1;
+        var up = y - 1;
+    }
     return [[right,down], [right,y], [x,down], [left,up], [left,y], [x,up], [right,up], [left,down]];
 };
 
@@ -40,7 +72,8 @@ var liveNeighbors = function(x, y) {
     var neighbors_array = getNeighbors(x, y);
     for(var idx=0; idx<neighbors_array.length; idx++) {
         var neighbor = neighbors_array[idx];
-        live += board[neighbor[0]][neighbor[1]];
+        if(neighbor)
+            live += board[neighbor[0]][neighbor[1]];
     }
     return live;
 };
@@ -63,10 +96,10 @@ var lifeStep = function() {
 };
 
 var playLife = function() {
-    lifeInit();
+    lifeInit(INITIAL_STATE);
     drawGrid(board);
     window.setInterval(function() {
         lifeStep();
         drawGrid(board);
-    }, 500);
+    }, TIMESTEP);
 }

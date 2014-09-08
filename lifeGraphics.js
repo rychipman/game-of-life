@@ -8,12 +8,12 @@ var ctx = canvas.getContext("2d");
 // and a 25 by 25 life grid
 // TODO: handle that stuff dynamically, maybe based on URL
 
-var BOARD_COLORS = ["#FFFFFF", "#222222"]  ;
+var BOARD_COLORS = [DEAD_COLOR, LIVE_COLOR];
 
 var CANVAS_HEIGHT = 500;
 var CANVAS_WIDTH = 500;
-var X_MAX = 24;
-var Y_MAX = 24;
+var X_MAX = BOARD_WIDTH - 1;
+var Y_MAX = BOARD_HEIGHT - 1;
 
 var cellHeight = CANVAS_HEIGHT / (X_MAX + 1);
 var cellWidth = CANVAS_WIDTH / (Y_MAX + 1);
