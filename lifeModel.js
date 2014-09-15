@@ -104,10 +104,11 @@ var Game = function(width, height) {
     var board;
     var timer;
 
-    var init= function(live_squares) {
+    var init= function(live_squares, wrap) {
 	ctl = LifeViewController(width, height);
-	board = Board(width, height, true);
-	board.init(live_squares);
+	board = Board(width, height, wrap);
+	var start_state = board.init(live_squares);
+	ctl.updateBoard(start_state);
     };
 
     var step = function() {

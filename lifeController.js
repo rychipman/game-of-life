@@ -18,7 +18,7 @@ var LifeViewController = function(board_width, board_height, dead_color, alive_c
 
     // public interface of the object
     var public = {
-
+	on:setSquareAlive,
 	updateBoard : function(newBoard) {
 	    for(var x=0; x<newBoard.length; x++) {
 		for(var y=0; y<newBoard[x].length; y++) {
