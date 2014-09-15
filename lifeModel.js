@@ -3,8 +3,7 @@ var Board = function(width, height, wrap) {
     // private instance variables
     var width = width ? width : 25;
     var height = height ? height : 25;
-    var wrap = wrap ? wrap : true;
-    var columns = null; // to be assigned later
+    var columns; // to be assigned later
 
     // private methods
     var getNeighbors = function(x, y) {
@@ -34,7 +33,7 @@ var Board = function(width, height, wrap) {
     };
 
     var copyBoard = function(board) {
-	return mapBoard(function(square) {
+	return mapBoard(function(col, row, square) {
 	    return square;
 	});
     };
@@ -45,7 +44,12 @@ var Board = function(width, height, wrap) {
 	var live_neighbors = neighbors.reduce(function(prevVal, currVal, idx, arr) {
 	    var x = currVal[0];
 	    var y = currVal[1];
-            return prevVal + columns[x][y];
+	    var is_alive;
+	    if(0<=x && x<columns.length && 0<=y && y<columns[0].length)
+		is_alive = columns[x][y];
+	    else
+		is_alive = 0;
+            return prevVal + is_alive;
 	}, 0);
 	var nextState = 0;
 	if(live_neighbors === 3) {
@@ -56,35 +60,38 @@ var Board = function(width, height, wrap) {
 	return nextState;
     }
 
+    var init = function(live_squares) {
+	columns = [];
+	for(var x=0; x<width; x++) {
+	    columns[x] = [];
+	    for(var y=0; y<height; y++) {
+		var str = x + "," + y;
+		if(live_squares) {
+		    if(live_squares.indexOf(str)>=0)
+			columns[x].push(1);
+		    else
+			columns[x].push(0);
+		} else {
+		    columns[x].push(Math.floor(Math.random()*2));
+		}
+	    }
+	}
+	return columns;
+    };
+
+    var step = function() {
+	columns = mapBoard(getNextState);
+	return columns;
+    };
+
     // the Board object's public interface
     var public = {
-
-	    step : function() {
-		var columns_new = mapBoard(getNextState);
-		columns = copyBoard(columns_new);
-		return columns_new;
-	    },
-
-	    init : function(live_squares) {
-		columns = [];
-		for(var x=0; x<width; x++) {
-		    columns[x] = [];
-		    for(var y=0; y<height; y++) {
-			var str = x + "," + y;
-			if(live_squares) {
-	     		    if(live_squares.indexOf(str)<=0)
-			        columns[x].push(1);
-			    else
-			        columns[x].push(0);
-			} else {
-			    columns[x].push(Math.floor(Math.random()*2));
-			}
-		    }
-		}
-		return columns;
-	    },
-
-            mapBoard : mapBoard
+	    step : step,
+	    init : init,
+            mapBoard : mapBoard,
+	    getNeighbors : getNeighbors,
+	    copyBoard : copyBoard,
+	    getNextState : getNextState
     };
     Object.freeze(public);
     return public;
@@ -97,31 +104,33 @@ var Game = function(width, height) {
     var board;
     var timer;
 
-    var step_game = function() {
+    var init= function(live_squares) {
+	ctl = LifeViewController(width, height);
+	board = Board(width, height, true);
+	board.init(live_squares);
+    };
+
+    var step = function() {
 	var next_state = board.step();
 	ctl.updateBoard(next_state);
+	return next_state;
+    };
+
+    var run = function(t_step) {
+	running = true;
+	var interval = t_step ? t_step : timestep;
+	timer = window.setInterval(step, interval);
+    };
+
+    var pause = function() {
+	window.clearInterval(timer);
     };
 
     var public = {
-
-        init : function(live_squares) {
-	    ctl = LifeViewController(width, height);
-	    board = Board(width, height, true);
-	    board.init(live_squares);
-        },
-
-        step : step_game,
-
-        run : function(t_step) {
-	    running = true;
-	    var interval = t_step ? t_step : timestep;
-	    timer = window.setInterval(step_game, interval);
-        },
-
-        pause : function() {
-	    window.clearInterval(timer);
-        }
-
+        init : init,
+        step : step,
+        run : run,
+        pause : pause
     };
     Object.freeze(public);
     return public;
