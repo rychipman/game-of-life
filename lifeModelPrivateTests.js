@@ -44,8 +44,8 @@ lifeApp.Board = function(width, height, wrap) {
     // to every cell on the board
     var mapBoard = function(map_fn) {
 	var mapColumn = function(column, currentCol) {
-            return column.map(function(cell_value, currentRow) {
-	        return map_fn(currentCol, currentRow, cell_value);
+            return column.map(function(square, currentRow) {
+	        return map_fn(column, row, cell_value);
             });
 	};
 	var c = columns;
@@ -120,8 +120,14 @@ lifeApp.Board = function(width, height, wrap) {
 	    // These are the intended public methods
 	    step : step,
 	    init : init,
-    };
 
+	    // These should be "private", but are left public
+	    // so that they can be more easily tested
+            mapBoard : mapBoard,
+	    getNeighbors : getNeighbors,
+	    copyBoard : copyBoard,
+	    getNextState : getNextState
+    };
     Object.freeze(public);
     return public;
 };
@@ -169,14 +175,12 @@ lifeApp.Game = function(width, height) {
 	window.clearInterval(timer);
     };
 
-    // the public interface for the Game class
     var public = {
         init : init,
         step : step,
         run : run,
         pause : pause
     };
-
     Object.freeze(public);
     return public;
 };
