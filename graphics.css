@@ -1,0 +1,10 @@
+
+.cell {
+    display: inline-block;
+    border: 1px solid black;
+    background-color: #FFFFFF;
+}
+
+.cell.live {
+    background-color: #222222;
+}

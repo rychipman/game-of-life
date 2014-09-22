@@ -139,6 +139,7 @@ lifeApp.Game = function(width, height) {
     // repeated interval. saved as a field so that
     // it can be stopped.
     var timer;
+    var running;
 
     // create a new Game of life. This includes a board
     // and a graphics controller
@@ -162,11 +163,15 @@ lifeApp.Game = function(width, height) {
 	running = true;
 	var interval = t_step ? t_step : timestep;
 	timer = window.setInterval(step, interval);
+	running = true;
     };
 
     // pause the game if currently running
     var pause = function() {
-	window.clearInterval(timer);
+	if(running) {
+	    window.clearInterval(timer);
+	    running = false;
+	}
     };
 
     // the public interface for the Game class
