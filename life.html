@@ -10,15 +10,23 @@
 
   <body>
 
-    <div id="info">
+    <div id="info" class="container">
+      <button class="title-box">Instructions</button>
+      <div id="info-text" class="text-box">
+        <p>Click on squares in the grid to turn them on. This can only be done while the game is paused.</p>
+        <p>Hit Play to start the game running. It will run continuously until it reaches an unchanging state unless you stop it.</p>
+        <p>Hit Save to capture a particular state and save it to be restored later in the session.</p>
+        <p>Hit restore to choose between saved states to load.</p>
+      </div>
     </div>
 
-    <div id="board-container"></div>
+    <div id="board-container" class="container"></div>
 
-    <div id="controls">
-      <button id='play-button'>Play</button>
-      <button id='pause-button'>Pause</button>
-      <button id='save-button'>Save</button>
+    <div id="controls" class="container">
+      <button id='play-button' class="title-box">Play</button>
+      <button id='pause-button' class="title-box">Pause</button>
+      <button id='save-button' class="title-box">Save</button>
+      <button id='restore-button' class="title-box">Restore</button>
     </div>
 
   </body>

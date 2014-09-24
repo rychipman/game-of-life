@@ -10,6 +10,8 @@ lifeApp.autorun = function() {
     return game;
 };
 
+lifeApp.saved_states = {};
+
 $(document).ready(function() {
 
     game = lifeApp.autorun();
@@ -21,6 +23,24 @@ $(document).ready(function() {
     $('#pause-button').click(function(event) {
 	game.pause();
     });
+
+    $('#save-button').click(function(event) {
+	var state = game.grabBoard();
+	var name = prompt("Name the saved state:", "savedState1");
+	lifeApp.saved_states[name] = state;
+    });
+
+    $('#restore-button').click(function(event) {
+	var prompt_text = "Type the name of the state to restore.\nThe following saved states are available:\n";
+	for(var state in lifeApp.saved_states)
+	    prompt_text += "\n" + state;
+	var selected_state = prompt(prompt_text);
+	var board = lifeApp.saved_states[selected_state];
+	console.log(lifeApp.saved_states);
+	console.log(selected_state);
+	console.log(board);
+	game.restoreBoard(board);
+    })
 
     $('.cell').click(function(event) {
 	var cell = $(this);

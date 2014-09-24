@@ -127,6 +127,7 @@ lifeApp.Board = function(width, height) {
     // its neighbors
     var init = function() {
 	cells = [];
+	lookat = {};
 	// create cells with corresponding coordinates
 	for(var x=0; x<width; x++) {
 	    for(var y=0; y<height; y++) {
@@ -213,7 +214,7 @@ lifeApp.Board = function(width, height) {
 	    return curr.getState() == 1;
 	});
 	var serial = live_cells.map(function(value) {
-	    return [value.getX(), value.getY()];
+	    return [value.getY(), value.getX()];
 	});
 	return serial;
     };
@@ -225,11 +226,10 @@ lifeApp.Board = function(width, height) {
 	board_rep.forEach(function(value) {
 	    var x = value[0];
 	    var y = value[1];
-	    var cell = cells[y * width + x];
-	    cell.toggleState();
+	    var cell = toggleCellState(x, y);
 	    changed.push(cell);
 	});
-	return changed;
+	return cells;
     };
 
     // the Board object's public interface
@@ -280,7 +280,10 @@ lifeApp.Game = function(width, height) {
     // sending the update to the graphics controller
     var step = function() {
 	var changes = board.step();
-	ctl.updateBoard(changes);
+	if(changes == [])
+	    pause();
+	else
+	    ctl.updateBoard(changes);
     };
 
     // start running the game, with the specified timestep
@@ -319,6 +322,7 @@ lifeApp.Game = function(width, height) {
     // restore the board to a configuration previously saved
     // with grabBoard
     var restoreBoard = function(board_rep) {
+	pause();
 	var update = board.restore(board_rep);
 	ctl.updateBoard(update);
     };
