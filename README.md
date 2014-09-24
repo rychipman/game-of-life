@@ -16,9 +16,21 @@ To open the game, open the file __life.html__ in a modern web browser. This will
 Many of the points that I would light to highlight for grading are ones that I have already mentioned down below in design challenges. So, I will refer the grader down there for a more detailed description of the elements, and take this space up here to provide links to the specific lines.
 
 - Cell Class
+
+https://github.com/6170-fa14/rchipman_proj1/blob/f7aea623f7bd1f394a45a0e56b4f7d5bd3963522/lifeModel.js#L8
+
 - Optimizing
+
+https://github.com/6170-fa14/rchipman_proj1/blob/f7aea623f7bd1f394a45a0e56b4f7d5bd3963522/lifeModel.js#L8
+
 - Graphics Reorganization
+
+https://github.com/6170-fa14/rchipman_proj1/blob/f7aea623f7bd1f394a45a0e56b4f7d5bd3963522/lifeController.js#L16-L54
+
 - Save and Restore
+
+https://github.com/6170-fa14/rchipman_proj1/blob/f7aea623f7bd1f394a45a0e56b4f7d5bd3963522/main.js#L29-L42
+https://github.com/6170-fa14/rchipman_proj1/blob/f7aea623f7bd1f394a45a0e56b4f7d5bd3963522/lifeModel.js#L8
 
 ####Questions
 
