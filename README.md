@@ -3,6 +3,40 @@ Project 1 : Game of Life
 
 ##Ryan Chipman
 
+# Phase 2
+
+###Execution Instructions
+
+To open the game, open the file __life.html__ in a modern web browser. This will show you 
+
+###Grader Direction
+
+####Highlights
+
+Some highlights here:
+
+####Questions
+
+This class has heavily advocated for the use of functionals in place of iteration. Aren't functionals inherently slower than iteration in many cases? I understand the benefits when it comes to the readability and conceptual clarity of the code, but, especially with resource-intensive applications (like the Game of Life could be were it made large enough), what is the proper balance between nice-to-read code and performance?
+
+###Design Challenges
+
+A number of important design changes were made while updating my project from phase 1. All in all, they added up to give me a much better and cleaner abstraction, more efficient computation of steps, and increased modularity that made incorporating my additional features smooth and simple.
+
+- Cell class
+
+This was one of the first decisions I made upon starting phase 2. I previously thought it was abstraction-overkill to have a whole class for a single cell when a boolean or int would suffice. However, using primitives instead of an abstraction forced me into using a 2D-array in the Board class (which made for some messy functionals), and resulted in me having more & messier functions in my Board class than I would have liked. Getting rid of it allowed me to greatly simplify my abstractions, and, as I will detail next, make my code more efficient.
+
+- Optimizing the Game
+
+With a sufficiently large board, the game started to slow down. The solution of simply limiting board size felt cheap to me, and so I went about optimizing my code. My initial implementation was rife with unnecessary iteration. To fix this, I changed my viewController implementation so that I only sent the cells that had changed to be updated. This saved TONS of iteration on the GUI side, especially for simpler patterns. To parallel that on the model side, I implemented a strategy that, whenever the game stepped, only calculated the next state for cells that were eligible to change (i.e. cells that changed the previous iteration and the neighbors of such cells). This resulted in snappier performance overall, and meant that performance was now no longer a function of board size, but rather of the size and complexity of the board _state_ at any given time.
+
+- Graphics library reorganization
+
+When using the canvas as my graphics library, the viewController functioned as an intermediary between the low-level graphics functions and the high-level Game class. However, when it came time to switch to a DOM-based implementation, I wanted to simplify things a bit. By creating my board (made of divs) dynamically using javascript and applying and removing css classes with javascipt to change colors, etc, I was able to greatly compact the amount of code I needed to achieve my desired effect, while not sacrificing functionality or clarity to do so.
+
+# Phase 1
+
 ###Execution Instructions
 
 Running this is very easy -- just open up the life.html file in a modern web browser and enjoy!

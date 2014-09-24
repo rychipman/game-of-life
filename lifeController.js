@@ -3,10 +3,16 @@ var lifeApp = lifeApp || {};
 
 lifeApp.LifeViewController = function(board_width, board_height, dead_color, alive_color) {
 
+    // a list of the DOM elements (divs to be precise) that
+    // graphically represent the cells on the board
     var cells = [];
+
+    // board dimensions (for the board abstraction, not
+    // actual size in pixels)
     var width = board_width;
     var height = board_height;
 
+    // create a new board on the gui.
     var createBoard = function(width, height, pxWidth, pxHeight) {
 	var board = document.createElement('div');
 	board.style.width = pxWidth;
@@ -30,11 +36,12 @@ lifeApp.LifeViewController = function(board_width, board_height, dead_color, ali
 	    }
 	    board.appendChild(row);
 	}
-	$('body').prepend($(board));
+	$('#board-container').prepend($(board));
     };
 
     // update the screen to reflect the given new
-    // state of the board
+    // state of the board by adding or removing
+    // css classes for those elements which changed.
     var updateBoard = function(changes) {
 	changes.forEach(function(cell) {
 	    var state = cell.getState();
@@ -46,7 +53,6 @@ lifeApp.LifeViewController = function(board_width, board_height, dead_color, ali
 	    else
 		div.removeClass('live');
 	});
-
     };
 
     // the public interface for the viewController
@@ -54,7 +60,8 @@ lifeApp.LifeViewController = function(board_width, board_height, dead_color, ali
 	updateBoard : updateBoard
     };
 
-    createBoard(board_width, board_height, 1000, 1000);
+    createBoard(board_width, board_height, 750, 750);
+
     Object.freeze(public);
     return public;
 };

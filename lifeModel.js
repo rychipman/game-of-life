@@ -119,7 +119,7 @@ lifeApp.Board = function(width, height) {
     // the game's computational efficiency
     // An object is used instead of a list so that
     // avoiding duplicates is not a concern
-    var lookat;
+    var lookat = {};
 
     // initialize a board.
     // all of the squares are created and initialized
@@ -128,8 +128,8 @@ lifeApp.Board = function(width, height) {
     var init = function() {
 	cells = [];
 	// create cells with corresponding coordinates
-	for(var y=0; y<width; y++) {
-	    for(var x=0; x<height; x++) {
+	for(var x=0; x<width; x++) {
+	    for(var y=0; y<height; y++) {
 		var new_cell = lifeApp.Cell(x, y, 0);
 		cells.push(new_cell);
 	    }
@@ -205,12 +205,39 @@ lifeApp.Board = function(width, height) {
 	    lookat[cell.getX() + "," + cell.getY()] = cell;
 	});
 	return cell;
-    }
+    };
+
+    // return an array representation of the board
+    var grab = function() {
+	var live_cells = cells.filter(function(curr) {
+	    return curr.getState() == 1;
+	});
+	var serial = live_cells.map(function(value) {
+	    return [value.getX(), value.getY()];
+	});
+	return serial;
+    };
+
+    // restore the board from an array representation
+    var restore = function(board_rep) {
+	init();
+	var changed = [];
+	board_rep.forEach(function(value) {
+	    var x = value[0];
+	    var y = value[1];
+	    var cell = cells[y * width + x];
+	    cell.toggleState();
+	    changed.push(cell);
+	});
+	return changed;
+    };
 
     // the Board object's public interface
     var public = {
 	step : step,
 	init : init,
+	grab : grab,
+	restore : restore,
 	toggleCellState : toggleCellState
     };
 
@@ -254,7 +281,6 @@ lifeApp.Game = function(width, height) {
     var step = function() {
 	var changes = board.step();
 	ctl.updateBoard(changes);
-	return changes;
     };
 
     // start running the game, with the specified timestep
@@ -283,12 +309,28 @@ lifeApp.Game = function(width, height) {
 	}
     };
 
+    // return a representation of the board that can
+    // later be used to restore this board configuration
+    var grabBoard = function() {
+	pause();
+	return board.grab();
+    };
+
+    // restore the board to a configuration previously saved
+    // with grabBoard
+    var restoreBoard = function(board_rep) {
+	var update = board.restore(board_rep);
+	ctl.updateBoard(update);
+    };
+
     // the public interface for the Game class
     var public = {
         init : init,
         step : step,
         run : run,
         pause : pause,
+	grabBoard : grabBoard,
+	restoreBoard : restoreBoard,
 	toggleCellState : toggleCellState
     };
 

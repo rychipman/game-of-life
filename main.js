@@ -3,8 +3,8 @@ var lifeApp = lifeApp || {};
 
 // this function will be run on page load
 lifeApp.autorun = function() {
-    var width = 40;
-    var height = 40;
+    var width = 45;
+    var height = 45;
     var game = lifeApp.Game(width,height);
     game.init();
     return game;
@@ -12,7 +12,7 @@ lifeApp.autorun = function() {
 
 $(document).ready(function() {
 
-    var game = lifeApp.autorun();
+    game = lifeApp.autorun();
 
     $('#play-button').click(function(event) {
 	game.run();
