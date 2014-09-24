@@ -34,6 +34,7 @@
     height: 500;
 }
 
+/* styling for elements that contain text */
 .text-box {
     background-color: #CCCCCC;
     border: 3px solid #555555;
@@ -57,19 +58,6 @@
     font-weight: bold;
     color: #333333;
 }
-
-.button:hover {
-    background-color: #AAAAAA;
-}
-
-.button.selected {
-
-}
-
-button {
-}
-
-
 
 /* styling for the cells in various states */
 .cell {
